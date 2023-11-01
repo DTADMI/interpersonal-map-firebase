@@ -40,17 +40,24 @@ const find = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.find = find;
 const create = (newRelationship) => {
-    console.log(`Creating relationship ${JSON.stringify(newRelationship)}`);
-    return RelationshipCollection.add(newRelationship)
-        .then((docRef) => {
-        console.log("Relationship Document written with ID: ", docRef.id);
-        RelationshipCollection.doc(docRef.id).update({
-            id: docRef.id
+    console.log(`Service Creating relationship ${JSON.stringify(newRelationship)}`);
+    const idArray = [newRelationship.personSourceId, newRelationship.personTargetId];
+    console.log(`Service idArray : ${JSON.stringify(idArray)}`);
+    const docId = idArray.join(':');
+    console.log(`Service docId : ${docId}`);
+    console.log(`Service Joined ids : ${docId}`);
+    return RelationshipCollection
+        .doc(docId)
+        .set(newRelationship)
+        .then(() => {
+        console.log("Service Relationship Document written with ID: ", docId);
+        RelationshipCollection.doc(docId).update({
+            id: docId
         }).then(() => {
-            console.log("Relationship Document id successfully updated!");
+            console.log("Service Relationship Document id successfully updated!");
         });
         const relationship = Object.assign({}, newRelationship);
-        relationship.id = docRef.id;
+        relationship.id = docId;
         return relationship;
     });
 };

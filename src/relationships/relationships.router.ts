@@ -57,13 +57,16 @@ relationshipsRouter.get("/id", (req: Request, res: Response) => {
 // POST relationships
 
 relationshipsRouter.post("/", (req: Request, res: Response) => {
+    console.log(`Creation relationship with body : ${JSON.stringify(req.body)}`);
     const relationship: BaseRelationship = req.body;
+    console.log(`Creation relationship with : ${JSON.stringify(relationship)}`);
 
-    if(!relationship?.personSourceId || !relationship?.personTargetId || !relationship?.type) {
+    if(!relationship?.personSourceId || !relationship?.personTargetId) {
+        console.log("BAD REQUEST");
         res.sendStatus(400);
         return;
     }
-    console.log(`Creating relationship ${relationship}`);
+    console.log(`Creating relationship ${JSON.stringify(relationship)}`);
     RelationshipService.create(relationship)
         .then((newRelationship) => {
             console.log("Relationship Document written with ID: ", newRelationship.id);
@@ -80,7 +83,7 @@ relationshipsRouter.post("/", (req: Request, res: Response) => {
 relationshipsRouter.put("/", (req: Request, res: Response) => {
     const relationshipUpdate: Relationship = req.body;
     console.log(`In update! data sent : ${JSON.stringify(relationshipUpdate)}`)
-    if(!relationshipUpdate?.personSourceId || !relationshipUpdate?.personTargetId || !relationshipUpdate?.type || !relationshipUpdate?.id) {
+    if(!relationshipUpdate?.personSourceId || !relationshipUpdate?.personTargetId || !relationshipUpdate?.id) {
         console.log("Missing data in request body!")
         res.sendStatus(400);
         return;

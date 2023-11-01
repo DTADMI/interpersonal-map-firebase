@@ -24,6 +24,16 @@ export const findAll = async (): Promise<Map[]> => {
     })
 };
 
+export const findAllFromOwner = async (owner: string): Promise<Map[]> => {
+    console.log(`findAllFromOwner with owner: ${owner}`);
+    const snapshot = await MapCollection.where('owner', '==', owner).get();
+    if (snapshot.empty) {
+        console.log('No matching documents.');
+        return [] as Map[];
+    }
+    return snapshot.docs.map((doc) => doc.data() as Map);
+}
+
 export const find = async (id: string): Promise<Map | null> => {
     const docRef = MapCollection.doc(id);
     return docRef.get().then((doc) => {
@@ -38,7 +48,7 @@ export const find = async (id: string): Promise<Map | null> => {
 };
 
 export const create = (newMap: BaseMap): Promise<Map> => {
-    console.log(`Creating map ${newMap}`);
+    console.log(`Creating map ${JSON.stringify(newMap)}`);
     return MapCollection.add(newMap)
         .then((docRef) => {
             console.log("Map Document written with ID: ", docRef.id);

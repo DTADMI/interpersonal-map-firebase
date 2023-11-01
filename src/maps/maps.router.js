@@ -43,7 +43,6 @@ exports.mapsRouter = express_1.default.Router();
 exports.mapsRouter.get("/", (req, res) => {
     console.log("starting get all");
     MapService.findAll().then((maps) => {
-        //console.table(maps);
         if (!(maps === null || maps === void 0 ? void 0 : maps.length)) {
             console.log("no result");
         }
@@ -119,6 +118,27 @@ exports.mapsRouter.post("/", (req, res) => {
         .catch((error) => {
         console.error("Error adding document: ", error);
         res.status(500).send(`Error adding document: ${error}`);
+    });
+});
+// POST maps/owned
+exports.mapsRouter.post("/owned", (req, res) => {
+    const { owner } = req.body;
+    if (!owner) {
+        console.log("Owner missing");
+        res.sendStatus(400);
+        return;
+    }
+    console.log(`Getting all owned maps from ${owner}`);
+    MapService.findAllFromOwner(owner)
+        .then((maps) => {
+        if (!(maps === null || maps === void 0 ? void 0 : maps.length)) {
+            console.log("no result");
+        }
+        res.status(200).send(maps);
+    })
+        .catch((error) => {
+        console.error("Error while getting all owned document: ", error);
+        res.status(500).send(`Error while getting all owned document: ${error}`);
     });
 });
 // PUT maps

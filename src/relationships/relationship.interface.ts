@@ -1,8 +1,8 @@
 export interface BaseRelationship {
     personSourceId: string;
     personTargetId: string;
-    type: string;
-    description: string;
+    relationType?: string;
+    description?: string;
 }
 
 export interface Relationship extends BaseRelationship {

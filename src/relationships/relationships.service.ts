@@ -39,16 +39,20 @@ export const find = async (id: string): Promise<Relationship | null> => {
 
 export const create = (newRelationship: BaseRelationship): Promise<Relationship> => {
     console.log(`Creating relationship ${JSON.stringify(newRelationship)}`);
-    return RelationshipCollection.add(newRelationship)
-        .then((docRef) => {
-            console.log("Relationship Document written with ID: ", docRef.id);
-            RelationshipCollection.doc(docRef.id).update({
-                id: docRef.id
+    const docId = [newRelationship.personSourceId, newRelationship.personTargetId].join(':');
+    return RelationshipCollection
+        .doc(docId)
+        .set(newRelationship)
+        .then(()=>{
+            console.log("Relationship Document written with ID: ", docId);
+            RelationshipCollection.doc(docId).update({
+                id: docId
             }).then(() => {
                 console.log("Relationship Document id successfully updated!");
             });
+
             const relationship = {...newRelationship} as Relationship;
-            relationship.id = docRef.id;
+            relationship.id = docId;
             return relationship;
         });
 };

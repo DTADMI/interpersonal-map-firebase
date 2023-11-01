@@ -74,12 +74,15 @@ exports.relationshipsRouter.get("/id", (req, res) => {
 });
 // POST relationships
 exports.relationshipsRouter.post("/", (req, res) => {
+    console.log(`Creation relationship with body : ${JSON.stringify(req.body)}`);
     const relationship = req.body;
-    if (!(relationship === null || relationship === void 0 ? void 0 : relationship.personSourceId) || !(relationship === null || relationship === void 0 ? void 0 : relationship.personTargetId) || !(relationship === null || relationship === void 0 ? void 0 : relationship.type)) {
+    console.log(`Creation relationship with : ${JSON.stringify(relationship)}`);
+    if (!(relationship === null || relationship === void 0 ? void 0 : relationship.personSourceId) || !(relationship === null || relationship === void 0 ? void 0 : relationship.personTargetId)) {
+        console.log("BAD REQUEST");
         res.sendStatus(400);
         return;
     }
-    console.log(`Creating relationship ${relationship}`);
+    console.log(`Creating relationship ${JSON.stringify(relationship)}`);
     RelationshipService.create(relationship)
         .then((newRelationship) => {
         console.log("Relationship Document written with ID: ", newRelationship.id);
@@ -94,7 +97,7 @@ exports.relationshipsRouter.post("/", (req, res) => {
 exports.relationshipsRouter.put("/", (req, res) => {
     const relationshipUpdate = req.body;
     console.log(`In update! data sent : ${JSON.stringify(relationshipUpdate)}`);
-    if (!(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.personSourceId) || !(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.personTargetId) || !(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.type) || !(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.id)) {
+    if (!(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.personSourceId) || !(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.personTargetId) || !(relationshipUpdate === null || relationshipUpdate === void 0 ? void 0 : relationshipUpdate.id)) {
         console.log("Missing data in request body!");
         res.sendStatus(400);
         return;

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.remove = exports.updatePeople = exports.update = exports.create = exports.find = exports.findAll = void 0;
+exports.remove = exports.updatePeople = exports.update = exports.create = exports.find = exports.findAllFromOwner = exports.findAll = void 0;
 const firebase_1 = require("../common/firebase");
 /**
  * Firebase Store
@@ -25,6 +25,16 @@ const findAll = () => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.findAll = findAll;
+const findAllFromOwner = (owner) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(`findAllFromOwner with owner: ${owner}`);
+    const snapshot = yield MapCollection.where('owner', '==', owner).get();
+    if (snapshot.empty) {
+        console.log('No matching documents.');
+        return [];
+    }
+    return snapshot.docs.map((doc) => doc.data());
+});
+exports.findAllFromOwner = findAllFromOwner;
 const find = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const docRef = MapCollection.doc(id);
     return docRef.get().then((doc) => {
@@ -40,7 +50,7 @@ const find = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.find = find;
 const create = (newMap) => {
-    console.log(`Creating map ${newMap}`);
+    console.log(`Creating map ${JSON.stringify(newMap)}`);
     return MapCollection.add(newMap)
         .then((docRef) => {
         console.log("Map Document written with ID: ", docRef.id);
