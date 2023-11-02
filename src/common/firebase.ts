@@ -3,7 +3,7 @@ import {getFirestore} from 'firebase-admin/firestore';
 import { Buffer } from "buffer";
 import * as dotenv from 'dotenv';
 dotenv.config();
-const privateKey = process.env.FIREBASE_CREDS_PRIVATE_KEY2 ? Buffer.from(process.env.FIREBASE_CREDS_PRIVATE_KEY2, 'base64').toString().replace(/\\n/g, '\n') : undefined;
+const privateKey = process.env.FIREBASE_CREDS_PRIVATE_KEY ? Buffer.from(process.env.FIREBASE_CREDS_PRIVATE_KEY, 'base64').toString().replace(/\\n/g, '\n') : undefined;
 
 const serviceAccount: ServiceAccount = {
     type: process.env.FIREBASE_CREDS_TYPE,
