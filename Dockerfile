@@ -11,4 +11,4 @@ COPY . .
 
 # Start the service in the container
 # The build was directly included in this one
-CMD npm start
+CMD npm run start
