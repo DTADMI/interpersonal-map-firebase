@@ -35,7 +35,7 @@ peopleRouter.get("/", (req: Request, res: Response) => {
 // GET /id/?id
 
 peopleRouter.get("/id", (req: Request, res: Response) => {
-    const id = req.query.id || "";
+    const id = req.query.id ?? "";
     if (!id) {
         res.sendStatus(404);
         return;

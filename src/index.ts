@@ -40,8 +40,8 @@ app.use("/api/interrelmap/people", peopleRouter);
 app.use("/api/interrelmap/relationships", relationshipsRouter);
 app.use("/api/interrelmap/stories", storiesRouter);
 
-app.use(errorHandler);
 app.use(notFoundHandler);
+app.use(errorHandler);
 
 /**
  * Server Activation

@@ -35,7 +35,7 @@ mapsRouter.get("/", (req: Request, res: Response) => {
 // GET /id/?id
 
 mapsRouter.get("/id", (req: Request, res: Response) => {
-    const id = req.query.id || "";
+    const id = req.query.id ?? "";
     if (!id) {
         res.sendStatus(404);
         return;
@@ -57,7 +57,7 @@ mapsRouter.get("/id", (req: Request, res: Response) => {
 // GET /name/?name
 
 mapsRouter.get("/name", (req: Request, res: Response) => {
-    let name = req.query.name || "";
+    let name = req.query.name ?? "";
     console.log(`Starting get map by name with name : ${name}`);
     if (!name) {
         console.log("Name not provided!")

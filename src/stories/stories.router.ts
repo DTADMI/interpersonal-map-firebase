@@ -35,7 +35,7 @@ storiesRouter.get("/", (req: Request, res: Response) => {
 // GET /id/?id
 
 storiesRouter.get("/id", (req: Request, res: Response) => {
-    const id = req.query.id || "";
+    const id = req.query.id ?? "";
     if (!id) {
         res.sendStatus(404);
         return;
@@ -63,7 +63,7 @@ storiesRouter.post("/", (req: Request, res: Response) => {
         res.sendStatus(400);
         return;
     }
-    console.log(`Creating story ${story}`);
+    console.log(`Creating story ${JSON.stringify(story)}`);
     StoryService.create(story)
         .then((newStory) => {
             console.log("Story Document written with ID: ", newStory.id);
