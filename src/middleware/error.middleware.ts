@@ -10,7 +10,9 @@ export const errorHandler = (
     next: NextFunction
 ) => {
     const status = (error.statusCode ?? error.status) ?? 500;
-
+    if(next){
+        next(error);
+    }
     console.error(`😱 An error occurred during the request 💀: ${JSON.stringify(error)}`);
     response.status(status).send(error);
 };

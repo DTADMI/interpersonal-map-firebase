@@ -9,7 +9,9 @@ export const notFoundHandler = (
 ) => {
 
     const message = "😅 Resource not found! 🏳️";
-
+    if(next){
+        next();
+    }
     console.error(`The server received the request : ${JSON.stringify(request.path)} with parameters: ${JSON.stringify(request.params)}`);
     console.error(`${JSON.stringify(message)}`);
     response.status(404).send(message);
