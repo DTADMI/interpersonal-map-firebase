@@ -24,6 +24,16 @@ export const findAll = async (): Promise<Relationship[]> => {
     })
 };
 
+export const findAllInMap = async (mapId: string): Promise<Relationship[]> => {
+    console.log(`findAllInMap with owner: ${mapId}`);
+    const snapshot = await RelationshipCollection.where('mapId', '==', mapId).get();
+    if (snapshot.empty) {
+        console.log('No matching documents.');
+        return [] as Relationship[];
+    }
+    return snapshot.docs.map((doc) => doc.data() as Relationship);
+}
+
 export const find = async (id: string): Promise<Relationship | null> => {
     const docRef = RelationshipCollection.doc(id);
     return docRef.get().then((doc) => {

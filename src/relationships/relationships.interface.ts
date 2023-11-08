@@ -2,6 +2,6 @@
 
 import { Relationship } from "./relationship.interface";
 
-export interface People {
+export interface Relationships {
     [key: number]: Relationship;
 }

@@ -78,6 +78,30 @@ relationshipsRouter.post("/", (req: Request, res: Response) => {
         });
 });
 
+// POST maps/owned
+
+relationshipsRouter.post("/mapId", (req: Request, res: Response) => {
+    const {mapId } = req.body;
+
+    if(!mapId) {
+        console.log("mapId missing")
+        res.sendStatus(400);
+        return;
+    }
+    console.log(`Getting all relationships in ${mapId}`);
+    RelationshipService.findAllInMap(mapId)
+        .then((relationships: Relationship[]) => {
+            if(!relationships?.length){
+                console.log("no result");
+            }
+            res.status(200).send(relationships);
+        })
+        .catch((error) => {
+            console.error(`Error while getting all relationships in map ${mapId}: `, error);
+            res.status(500).send(`Error while getting all all relationships in map ${mapId}: ${error}`);
+        });
+});
+
 // PUT relationships
 
 relationshipsRouter.put("/", (req: Request, res: Response) => {

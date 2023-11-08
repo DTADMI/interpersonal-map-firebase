@@ -3,7 +3,6 @@ export interface BaseMap {
     description: string,
     imgSrc: string,
 	people: Array<string>,
-	relationships: Array<string>,
     owner: string
 }
 
