@@ -21,9 +21,21 @@ export const mapsRouter = express.Router();
 
 mapsRouter.get("/", (req: Request, res: Response) => {
     console.log("starting get all");
-    MapService.findAll().then((maps: Map[])=>{
+    const page=req.query?.page ?? "";
+    const limit=req.query?.limit ?? "";
+    MapService.findAll().then((maps: Map[])=> {
         if(!maps?.length){
             console.log("no result");
+        }
+        if(page && limit) {
+            console.log(`Getting sliced maps with ${limit} elements starting at page ${page}`);
+            const pageInt = Math.floor(parseInt(page.toString()));
+            const limitInt = Math.floor(parseInt(limit.toString()));
+            const startIndex = (pageInt-1)*limitInt;
+            const endIndex = (pageInt)*limitInt;
+            console.log(`Getting sliced maps from ${startIndex} to ${endIndex} excluded`);
+
+            maps = maps.slice(startIndex, endIndex);
         }
         res.status(200).send(maps);
     }).catch((error) => {
@@ -57,7 +69,7 @@ mapsRouter.get("/id", (req: Request, res: Response) => {
 // GET /name/?name
 
 mapsRouter.get("/name", (req: Request, res: Response) => {
-    let name = req.query.name ?? "";
+    let name = req.query?.name ?? "";
     console.log(`Starting get map by name with name : ${name}`);
     if (!name) {
         console.log("Name not provided!")
@@ -111,6 +123,8 @@ mapsRouter.post("/", (req: Request, res: Response) => {
 
 mapsRouter.post("/owned", (req: Request, res: Response) => {
     const { owner } = req.body;
+    const page=req.query?.page ?? "";
+    const limit=req.query?.limit ?? "";
 
     if(!owner) {
         console.log("Owner missing")
@@ -122,6 +136,16 @@ mapsRouter.post("/owned", (req: Request, res: Response) => {
         .then((maps: Map[]) => {
             if(!maps?.length){
                 console.log("no result");
+            }
+            if(page && limit) {
+                console.log(`Getting sliced maps with ${limit} elements starting at page ${page}`);
+                const pageInt = Math.floor(parseInt(page.toString()));
+                const limitInt = Math.floor(parseInt(limit.toString()));
+                const startIndex = (pageInt-1)*limitInt;
+                const endIndex = (pageInt)*limitInt;
+                console.log(`Getting sliced maps from ${startIndex} to ${endIndex} excluded`);
+
+                maps = maps.slice(startIndex, endIndex);
             }
             res.status(200).send(maps);
         })
