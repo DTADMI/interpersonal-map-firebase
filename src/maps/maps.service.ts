@@ -6,6 +6,7 @@
 
 import {BaseMap, Map} from "./map.interface";
 import {db} from "../common/firebase";
+import {cache, CACHE_KEYS, clearAllCache} from "../common/cache.service";
 
 
 /**
@@ -19,13 +20,23 @@ const MapCollection = db.collection("Map");
  */
 
 export const findAll = async (): Promise<Map[]> => {
-    return MapCollection.get().then((snapshot)=>{
+    const cacheKey = CACHE_KEYS.MAPS.ALL_MAPS;
+    if(cache.has(cacheKey)){
+        return Promise.resolve(cache.get<Map[]>(cacheKey) as Map[]);
+    }
+    
+    return MapCollection.orderBy("owner", 'asc').startAfter("").limit(0).get().then((snapshot)=>{
         return snapshot.docs.map((doc) => doc.data() as Map);
     })
 };
 
 export const findAllFromOwner = async (owner: string): Promise<Map[]> => {
     console.log(`findAllFromOwner with owner: ${owner}`);
+    const cacheKey = CACHE_KEYS.MAPS.USER_MAPS;
+    if(cache.has(cacheKey)){
+        return Promise.resolve(cache.get<Map[]>(cacheKey) as Map[]);
+    }
+
     const snapshot = await MapCollection.where('owner', '==', owner).get();
     if (snapshot.empty) {
         console.log('No matching documents.');
@@ -34,7 +45,12 @@ export const findAllFromOwner = async (owner: string): Promise<Map[]> => {
     return snapshot.docs.map((doc) => doc.data() as Map);
 }
 
-export const find = async (id: string): Promise<Map | null> => {
+export const findById = async (id: string): Promise<Map | null> => {
+    const cacheKey = CACHE_KEYS.MAPS.ALL_MAPS;
+    if(cache.has(cacheKey)) {
+        const maps = cache.get<Map[]>(cacheKey) as Map[];
+        return Promise.resolve(maps?.find(map => map.id === id) ?? null);
+    }
     const docRef = MapCollection.doc(id);
     return docRef.get().then((doc) => {
         if (doc.exists) {
@@ -47,11 +63,26 @@ export const find = async (id: string): Promise<Map | null> => {
     })
 };
 
+export const findByName = async (name: string): Promise<Map | null> => {
+    const cacheKey = CACHE_KEYS.MAPS.ALL_MAPS;
+    if(cache.has(cacheKey)) {
+        const maps = cache.get<Map[]>(cacheKey) as Map[];
+        return Promise.resolve(maps?.find(map => map.name === name) ?? null);
+    }
+
+    return MapCollection.where('name', '==', name).get().then((snapshot)=>{
+        return snapshot.docs.map((doc) => {
+            return doc.data() as Map;
+        }).find((map: Map) => map.name === name) ?? null;
+    })
+};
+
 export const create = (newMap: BaseMap): Promise<Map> => {
     console.log(`Creating map ${JSON.stringify(newMap)}`);
     return MapCollection.add(newMap)
         .then((docRef) => {
             console.log("Map Document written with ID: ", docRef.id);
+            clearAllCache();
             MapCollection.doc(docRef.id).update({
                 id: docRef.id
             }).then(() => {
@@ -71,6 +102,7 @@ export const update = async (
     return docRef.set(mapUpdate, {merge: true})
         .then(() => {
             console.log("Map Document successfully updated!");
+            clearAllCache();
             return docRef.get().then((doc) => {
                 if (doc.exists) {
                     console.log("Map Document data:", doc.data());
@@ -93,6 +125,7 @@ export const updatePeople = async (
     return docRef.set(dataUpdate, {merge: true})
         .then(() => {
             console.log("Map Document successfully updated!");
+            clearAllCache();
             return docRef.get().then((doc) => {
                 if (doc.exists) {
                     console.log("Map Document data:", doc.data());
@@ -111,6 +144,7 @@ export const remove = async (id: string): Promise<string | void> => {
     const docRef = MapCollection.doc(id);
     return docRef.delete().then(() => {
         console.log("Map Document deleted");
+        clearAllCache();
         return id;
     })
 };

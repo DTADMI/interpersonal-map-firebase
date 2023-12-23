@@ -7,12 +7,11 @@ export const errorHandler = (
     error: HttpException,
     request: Request,
     response: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction
 ) => {
-    const status = (error.statusCode ?? error.status) ?? 500;
-    if(next){
-        next(error);
-    }
-    console.error(`😱 An error occurred during the request 💀: ${JSON.stringify(error)}`);
-    response.status(status).send(error);
+    const status = error.statusCode ?? 500;
+    const message = `😱 An error occurred during the request 💀: ${JSON.stringify(error)}`;
+    console.error(message);
+    return response.status(status).send(message);
 };
