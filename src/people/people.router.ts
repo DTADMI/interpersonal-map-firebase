@@ -117,7 +117,7 @@ peopleRouter.delete("/:id", (req: Request, res: Response) => {
     }
     PersonService.remove(id).then((id) => {
         console.log("Person Document deleted");
-        res.status(204).send(id);
+        res.status(202).send(id);
     }).catch((error) => {
         console.log("Error deleting document:", error);
         res.status(500).send(`Error deleting document: ${error}`);

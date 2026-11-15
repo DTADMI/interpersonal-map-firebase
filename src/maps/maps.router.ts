@@ -248,7 +248,7 @@ mapsRouter.delete(
         }
         MapService.remove(id).then((id) => {
             console.log("Map Document deleted");
-            res.status(204).send(id);
+            res.status(202).send(id);
         }).catch((error) => {
             errorMessage = "Error deleting document ";
             console.log(errorMessage, error);

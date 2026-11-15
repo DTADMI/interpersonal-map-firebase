@@ -144,7 +144,7 @@ relationshipsRouter.delete("/:id", (req: Request, res: Response) => {
     }
     RelationshipService.remove(id).then((id) => {
         console.log("Relationship Document deleted");
-        res.status(204).send(id);
+        res.status(202).send(id);
     }).catch((error) => {
         console.log("Error deleting document:", error);
         res.status(500).send(`Error deleting document: ${error}`);
